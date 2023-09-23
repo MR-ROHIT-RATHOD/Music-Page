@@ -1,0 +1,134 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Music Playlist</title>
+    <link rel="stylesheet" href="./style.css">
+</head>
+<body>
+    <h1>Music Playlist</h1>
+
+    <!-- Display the playlist -->
+    <div class="song">
+        <audio controls onended="playNext(this)">
+            <source src="../songs/Zara Zara Bahekta Hai Perfect [ Slowed Reverb Song ] (256 kbps).mp3" type="audio/mpeg">
+            Your browser does not support the audio element.
+        </audio>
+        <p>Zara Zara Bahekta Hai</p>
+        <button class="repeat-button" onclick="toggleRepeat(this)">Repeat</button>
+    </div>
+
+    <div class="song">
+        <audio controls onended="playNext(this)">
+            <source src="../songs/Tum Hi Ho (Slowed + Reverb) (192 kbps).mp3" type="audio/mpeg">
+            Your browser does not support the audio element.
+        </audio>
+        <p>Tum Hi Ho</p>
+        <button class="repeat-button" onclick="toggleRepeat(this)">Repeat</button>
+    </div>
+	
+	<div class="song">
+        <audio controls>
+            <source src="../songs/Sun sathiya [ Slowed ~ Reverb ] (256 kbps).mp3" type="audio/mpeg">
+            Your browser does not support the audio element.
+        </audio>
+        <p>Sun sathiya</p>
+		<button class="repeat-button" onclick="toggleRepeat(this)">Repeat</button>
+    </div>
+
+    <div class="song">
+        <audio controls>
+            <source src="../songs/Safar [slowed and reverb]@slowed and reverb (256 kbps).mp3" type="audio/mpeg">
+            Your browser does not support the audio element.
+        </audio>
+        <p>Safar</p>
+		<button class="repeat-button" onclick="toggleRepeat(this)">Repeat</button>
+    </div>
+
+    <div class="song">
+        <audio controls>
+            <source src="../songs/Ek Raat _ Vilen _ Slowed and Reverb _ king of musics (192 kbps).mp3" type="audio/mpeg">
+            Your browser does not support the audio element.
+        </audio>
+        <p>Ek raat vilen</p>
+		<button class="repeat-button" onclick="toggleRepeat(this)">Repeat</button>
+    </div>
+
+    <!-- Add more songs as needed -->
+
+    <script>
+        let currentAudio = null;
+        let isRepeating = false;
+
+        function playNext(audioElement) {
+            if (isRepeating) {
+                // If repeat is enabled, just play the same song again
+                audioElement.currentTime = 0;
+                audioElement.play();
+            } else {
+                // Find the next audio element and play it
+                const songDiv = audioElement.parentElement.nextElementSibling;
+                if (songDiv) {
+                    const nextAudio = songDiv.querySelector('audio');
+                    if (nextAudio) {
+                        nextAudio.currentTime = 0;
+                        nextAudio.play();
+                        currentAudio = nextAudio;
+                    }
+                }
+            }
+        }
+
+        function toggleRepeat(buttonElement) {
+            isRepeating = !isRepeating;
+            buttonElement.textContent = isRepeating ? 'Stop Repeat' : 'Repeat';
+        }
+
+        // Enable audio play/pause functionality
+        const audioElements = document.querySelectorAll('audio');
+        audioElements.forEach(enableAudioPlayPause);
+
+        function enableAudioPlayPause(audioElement) {
+            audioElement.addEventListener('play', () => {
+                // Pause all other audio elements
+                audioElements.forEach((element) => {
+                    if (element !== audioElement) {
+                        element.pause();
+                    }
+                });
+            });
+        }
+
+        // Enable audio drag functionality for all audio elements
+        audioElements.forEach(enableAudioDrag);
+
+        function enableAudioDrag(audioElement) {
+            let isDragging = false;
+
+            // When the user clicks on the progress bar, start tracking drag
+            audioElement.addEventListener('mousedown', () => {
+                isDragging = true;
+            });
+
+            // When the user releases the mouse, stop tracking drag
+            document.addEventListener('mouseup', () => {
+                if (isDragging) {
+                    isDragging = false;
+                    audioElement.currentTime = audioElement.duration * (event.clientX / window.innerWidth);
+                }
+            });
+
+            // Update the progress bar while dragging
+            document.addEventListener('mousemove', () => {
+                if (isDragging) {
+                    const progress = (event.clientX / window.innerWidth) * 100;
+                    audioElement.currentTime = audioElement.duration * (event.clientX / window.innerWidth);
+                }
+            });
+        }
+
+    </script>
+
+</body>
+</html>
